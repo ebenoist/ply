@@ -1,0 +1,12 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "golang.org/x/crypto/ssh",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "f6a608df624ae17d57958a8a294c66da81730577",
+			"branch": "master",
+			"path": "/ssh"
+		}
+	]
+}
