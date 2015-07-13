@@ -1,0 +1,29 @@
+Version: 1
+
+AppName: my-new-app
+DeployUser: deploy
+Container: ebenoist/my-app
+BeforeRun:
+  - docker exec {{.AppName}} rm /tmp/heartbeat.txt
+RunCommand: >
+  docker run -d
+    -e "ENV={{.Env}}
+    -e "JRUBY_OPTS={{.JRubyOpts}}"
+    -v /var/{{.AppName}/log:/var/log/nginx
+    -p 80:80
+    --name {{.AppName}} {{.Container}}:{{.DockerTag}}
+AfterRun:
+    - docker exec {{.AppName}} touch /tmp/heartbeat.txt
+DeployEnv:
+  Staging:
+    Hosts:
+      - my-app1.com
+      - my-app2.com
+    Vars:
+      JRubyOpts: -J-Xmn5376m -J-Xms7168m -J-Xmx7168m
+Plugins:
+  Hipchat:
+    Token: lasdkfj-lasdkfj
+    Rooms:
+      - 20348
+      - 53458
