@@ -63,3 +63,10 @@ Plugins will likely be separate binaries that talk via RPC?
 `ply plugin path/to/plugin` -- pull the binary? build it?
 
 Or should they just be built in?
+
+Development
+---
+
+### Setup
+`go get github.com/constabulary/gb/...`
+

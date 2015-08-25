@@ -24,7 +24,8 @@ func main() {
 	}
 
 	cfg := LoadConfig(file, vars, *deployEnv)
-	for h := range cfg.DeployEnvs[deployEnv].Hosts {
+	for h := range cfg.DeployEnvs[*deployEnv].Hosts {
+		fmt.Println("Deploying something to %s", h)
 	}
 }
 

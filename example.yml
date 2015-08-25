@@ -14,7 +14,7 @@ RunCommand: >
     --name {{.AppName}} {{.Container}}:{{.DockerTag}}
 AfterRun:
     - docker exec {{.AppName}} touch /tmp/heartbeat.txt
-DeployEnv:
+DeployEnvs:
   Staging:
     Hosts:
       - my-app1.com

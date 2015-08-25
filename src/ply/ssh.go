@@ -8,10 +8,14 @@ import (
 	"golang.org/x/crypto/ssh/agent"
 )
 
-func NewSession(url string, user string) (*SSHSession, error) {
+func NewSession(url string, user string) (*ssh.Session, error) {
+	auths := make([]ssh.AuthMethod, 1)
+	auth, _ := sshAgentAuth()
+	auths = append(auths, auth)
+
 	cfg := &ssh.ClientConfig{
 		User: user,
-		Auth: sshAgentAuth(),
+		Auth: auths,
 	}
 	cfg.SetDefaults()
 
@@ -29,7 +33,7 @@ func NewSession(url string, user string) (*SSHSession, error) {
 	return session, nil
 }
 
-func sshAgentAuth() ssh.AuthMethod {
+func sshAgentAuth() (ssh.AuthMethod, error) {
 	sock, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
 	if err != nil {
 		return nil, err
@@ -42,5 +46,5 @@ func sshAgentAuth() ssh.AuthMethod {
 		return nil, err
 	}
 
-	return ssh.PublicKeys(signers...)
+	return ssh.PublicKeys(signers...), nil
 }
