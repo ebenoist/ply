@@ -1,6 +1,6 @@
 PLY
 ---
-> ply is a dependency-less docker deploy tool.
+> ply is a dependency-less remote runner
 
 Installation
 ---
@@ -11,11 +11,7 @@ Installation
 
 Usage
 ---
-`ply deploy -e staging -c ply.yml -var "Env=staging,DockerTag=your-docker-tag"`
-
-`ply remote -e staging -c ply.yml bin/rake db:migrate`
-
-`ply remote -e staging -c ply.yml script/console`
+`ply -e staging -c ply.yml -var "Env=staging,DockerTag=your-docker-tag" deploy`
 
 Config
 ---
@@ -26,20 +22,28 @@ Any value can be overridden with either the -var flag or the vars hash under eac
 ```yaml
 Version: 1
 
-AppName: my-new-app
 DeployUser: deploy
-Container: ebenoist/my-app
-BeforeRun:
-  - docker exec {{.AppName}} rm /tmp/heartbeat.txt
-RunCommand: >
-  docker run -d
-    -e "ENV={{.Env}}
-    -e "JRUBY_OPTS={{.JRubyOpts}}"
-    -v /var/{{.AppName}/log:/var/log/nginx
-    -p 80:80
-    --name {{.AppName}} {{.Container}}:{{.DockerTag}}
-AfterRun:
+Vars:
+  AppName: my-new-app
+  Container: my-container
+Tasks:
+  WriteHeartBeat:
     - docker exec {{.AppName}} touch /tmp/heartbeat.txt
+  Stop:
+    - docker exec {{.AppName}} rm /tmp/heartbeat.txt
+    - docker stop
+  Run:
+    - >
+    docker run -d
+      -e "ENV={{.Env}}
+      -e "JRUBY_OPTS={{.JRubyOpts}}"
+      -v /var/{{.AppName}/log:/var/log/nginx
+      -p 80:80
+      --name {{.AppName}} {{.Container}}:{{.DockerTag}}
+  Deploy:
+    - Stop
+    - Run
+    - WriteHeartBeat
 DeployEnv:
   Staging:
     Hosts:
@@ -47,19 +51,14 @@ DeployEnv:
       - my-app2.com
     Vars:
       JRubyOpts: -J-Xmn5376m -J-Xms7168m -J-Xmx7168m
-Plugins:
-  Hipchat:
-    Token: lasdkfj-lasdkfj
-    Rooms:
-      - 20348
-      - 53458
-
 ```
 
 Plugins
 ---
-Plugins will likely be separate binaries that talk via RPC?
+Will probably be special predefined tasks
 
-`ply plugin path/to/plugin` -- pull the binary? build it?
+Development
+---
 
-Or should they just be built in?
+### Setup
+`go get github.com/constabulary/gb/...`
