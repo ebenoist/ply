@@ -1,0 +1,20 @@
+Version: 1
+
+DeployUser: deploy
+Vars:
+  AppName: "Foo"
+Tasks:
+  Start:
+    -
+  Deploy:
+    - docker exec {{.AppName}} rm /tmp/heartbeat.txt
+    - Start
+    - Stop
+
+DeployEnvs:
+  Staging:
+    Hosts:
+      - my-app1.com
+      - my-app2.com
+    Vars:
+      JRubyOpts: -J-Xmn5376m -J-Xms7168m -J-Xmx7168m
