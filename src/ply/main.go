@@ -23,7 +23,7 @@ func main() {
 			Usage: "The environment to execute the task",
 		},
 		cli.StringFlag{
-			Name:  "var, variables",
+			Name:  "vars, variables",
 			Usage: "Comma separated list of variables (ie. AppName=MyApp,Revision=v1.2.3)",
 		},
 		cli.StringFlag{
@@ -37,18 +37,27 @@ func main() {
 }
 
 func Action(c *cli.Context) {
+	if len(c.Args()) < 1 {
+		fmt.Println("ERROR: Please specify a a task\n\n")
+		cli.ShowAppHelp(c)
+		return
+	}
+
 	task := c.Args()[0]
 
 	tplVars := c.GlobalString("vars")
+	fmt.Printf(tplVars)
 	cfgPath := c.GlobalString("config")
 	env := c.GlobalString("environment")
 	host := c.GlobalString("host")
 
 	vars := parseVars(tplVars)
+	fmt.Printf("vars: " + tplVars)
 	file, err := ioutil.ReadFile(cfgPath)
 	if err != nil {
-		msg := fmt.Sprintf("Could not find config file: %s", cfgPath)
-		panic(msg)
+		fmt.Printf("ERROR: could not find the config file: %s\n\n", cfgPath)
+		cli.ShowAppHelp(c)
+		return
 	}
 
 	cfg := LoadConfig(file, vars, env)
