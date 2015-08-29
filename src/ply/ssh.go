@@ -51,11 +51,19 @@ func (c *AgentClient) Run(cmd string) error {
 	}
 	defer session.Close()
 
-	var b bytes.Buffer
-	session.Stdout = &b
-	session.Stderr = &b
+	var errors bytes.Buffer
+	var infos bytes.Buffer
+
+	session.Stdout = &infos
+	session.Stderr = &errors
 
 	err = session.Run(cmd)
-	log.Printf("Response: %s", b.String())
+
+	if len(errors.String()) > 0 {
+		log.Printf("%s", red(errors.String()))
+	} else {
+		log.Printf("%s", green(errors.String()))
+	}
+
 	return err
 }

@@ -7,7 +7,12 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
+	"github.com/fatih/color"
 )
+
+var green = color.New(color.FgGreen).SprintFunc()
+var red = color.New(color.FgRed).SprintFunc()
+var yellow = color.New(color.FgYellow).SprintFunc()
 
 func main() {
 	app := cli.NewApp()
@@ -46,13 +51,11 @@ func Action(c *cli.Context) {
 	task := c.Args()[0]
 
 	tplVars := c.GlobalString("vars")
-	fmt.Printf(tplVars)
 	cfgPath := c.GlobalString("config")
 	env := c.GlobalString("environment")
 	host := c.GlobalString("host")
 
 	vars := parseVars(tplVars)
-	fmt.Printf("vars: " + tplVars)
 	file, err := ioutil.ReadFile(cfgPath)
 	if err != nil {
 		fmt.Printf("ERROR: could not find the config file: %s\n\n", cfgPath)
