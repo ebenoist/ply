@@ -6,8 +6,8 @@ Installation
 ---
 
 ### OSX
-`brew tap somecask/ebenoist/ply`
-`brew install ply`
+- `brew tap ebenoist/ply`
+- `brew install ply`
 
 Usage
 ---
