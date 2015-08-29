@@ -11,13 +11,13 @@ Installation
 
 Usage
 ---
-`ply -e staging -c ply.yml -var "Env=staging,DockerTag=your-docker-tag" deploy`
+`ply -e staging -c ply.yml -vars "Env=staging,DockerTag=your-docker-tag" deploy`
 
 Config
 ---
 
 Configuration is done with a [templated](http://golang.org/pkg/text/template/) [yml](http://yaml.org) file.
-Any value can be overridden with either the -var flag or the vars hash under each DeployEnv.
+Any value can be overridden with either the -vars flag or the vars hash under each DeployEnv.
 
 ```yaml
 Version: 1
@@ -33,13 +33,7 @@ Tasks:
     - docker exec {{.AppName}} rm /tmp/heartbeat.txt
     - docker stop
   Run:
-    - >
-    docker run -d
-      -e "ENV={{.Env}}
-      -e "JRUBY_OPTS={{.JRubyOpts}}"
-      -v /var/{{.AppName}/log:/var/log/nginx
-      -p 80:80
-      --name {{.AppName}} {{.Container}}:{{.DockerTag}}
+    - docker run -d -e "ENV={{.Env}} -e "JRUBY_OPTS={{.JRubyOpts}}" -v /var/{{.AppName}/log:/var/log/nginx -p 80:80 --name {{.AppName}} {{.Container}}:{{.DockerTag}}
   Deploy:
     - Stop
     - Run
