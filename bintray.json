@@ -1,0 +1,9 @@
+{
+  "package": {
+    "name": "ply",
+    "repo": "ebenoist/ply",
+    "subject": "ebenoist/ply",
+    "github_use_tag_release_notes": true,
+  },
+  "files": [{ "includePattern": "build/*" }]
+}

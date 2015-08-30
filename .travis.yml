@@ -1,5 +1,16 @@
 language: go
 install:
-  - go get github.com/constabulary/gb/...
+- go get github.com/constabulary/gb/...
 go:
-  - 1.5
+- 1.5
+before_deploy:
+  - VERSION=$TRAVIS_TAG make release
+deploy:
+  provider: bintray
+  file: bintray.json
+  user: ebenoist
+  on:
+    all_branches: true
+  key:
+    secure: kxTOthRruhOMxB8x+vrPmijtXbnQFjw6R1kE6LRkthaKooqCYTHUOtWl72g97x5nGgOWOU11zJbXh+DO+JvxXkIuUtFyeWOEvJoxbuKzyYy8tuvdVw3C2oXAr1hQ2lMQwyWj3QA8WrpQ1nywea8XpEq/oO7jKg6Kb6YnfcoEzHOVXkxk75/mzujS/dPsVUFGWvvWxeV8xXNCjJ6/DLyVC0mnVJPTECCemM/cp05nfvpicJctYdi5FueYo/jS71nJMDyg8z5yZn+fdPFNP/8pdM42dTpJAYJ1+zOqV/xdpGzGzoPEOH4ZhKs8noe4IvvKoQXkr2rh0ALYAO9oSh3IK/PrVT85drmFCvD/oR4PD3Uwk1k8pjzuklaOTGKTaLXZVTYcsam/t4dK6uAAPYHigWSXv7JjqUJGFTTCjpM+8nZPrR8n5T0ihbgh9UHigPyYe5W2YJGcJ4K/oP4dbkONRRmqLRfqMpFDfkjcw6eZ1sIJdQV9g7DCYF2PuafwGj1HcuxPIfucO+QzD1uL3wTLA3BVJtlJQ4f7JiWRFL6fyN5yxxh09BYMwpvGxHYDpjS4KOBifm7JtQU1i8VBY66dBpxKOgB8LFvCqs67gajuGt1/LZuWYeLK7kg44CgIq7Pato8pvTTIfhDAljZMH2MiB+Dtj/I9volMW/DwzFbG0K0=
+  dry-run: true
