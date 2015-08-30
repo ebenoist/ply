@@ -11,7 +11,7 @@ func Run(task string, hosts []string, config Config) {
 		log.Printf("%s", yellow(msg))
 		client, err := NewAgentClient(host, config.DeployUser)
 		if err != nil {
-			log.Fatalf("%s", red(err))
+			log.Fatalf("%s", red(err.Error()))
 		}
 
 		prefix := fmt.Sprintf("%s ", yellow(host))
@@ -28,7 +28,7 @@ func RunTask(steps []string, client SSHClient, tasks Tasks) {
 			log.Printf("%s", green(step))
 			err := client.Run(step)
 			if err != nil {
-				log.Fatalf("%s", red(err))
+				log.Fatalf("%s", red(err.Error()))
 			}
 		}
 	}

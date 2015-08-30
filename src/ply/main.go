@@ -7,12 +7,12 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
-	"github.com/fatih/color"
+	"github.com/mgutz/ansi"
 )
 
-var green = color.New(color.FgGreen).SprintFunc()
-var red = color.New(color.FgRed).SprintFunc()
-var yellow = color.New(color.FgYellow).SprintFunc()
+var green = ansi.ColorFunc("green")
+var red = ansi.ColorFunc("red")
+var yellow = ansi.ColorFunc("yellow")
 
 func main() {
 	app := cli.NewApp()
