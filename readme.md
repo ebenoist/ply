@@ -2,6 +2,8 @@ PLY
 ---
 > ply is a dependency-less remote runner
 
+[![Build Status](https://travis-ci.org/ebenoist/ply.svg)](https://travis-ci.org/ebenoist/ply)
+
 Installation
 ---
 
