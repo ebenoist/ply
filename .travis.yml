@@ -6,6 +6,7 @@ go:
 before_deploy:
   - VERSION=$TRAVIS_TAG make release
 deploy:
+  skip_cleanup: true
   provider: bintray
   file: bintray.json
   user: ebenoist
