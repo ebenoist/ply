@@ -7,27 +7,30 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Tasks map[string][]string
 type Vars map[string]string
+type RawConfig struct {
+	Version     string                 `yaml:"Version"`
+	Vars        Vars                   `yaml:"Vars"`
+	Tasks       map[string]interface{} `yaml:"Tasks"`
+	Environment map[string]interface{} `yaml:"Environment"`
+	Plugins     map[string]interface{} `yaml:"Plugins"`
+}
 
 type Config struct {
-	Version    string               `yaml:"Version"`
-	Vars       Vars                 `yaml:"Vars"`
-	Tasks      Tasks                `yaml:"Tasks"`
-	DeployUser string               `yaml:"DeployUser"`
-	DeployEnvs map[string]DeployEnv `yaml:"DeployEnvs"`
+	Tasks       []*Task
+	Environment Environment
 }
 
-type DeployEnv struct {
-	Hosts []string `yaml:"Hosts"`
-	Vars  Vars     `yaml:"Vars"`
+type Environment struct {
+	Hosts []string
+	User  string
 }
 
-func LoadConfig(yml []byte, vars Vars, env string) Config {
-	c := parseConfig(parseTmpl(yml, vars))
+func NewConfig(yml []byte, runtimeVars map[string]string, env string) Config {
+	rawConfig := parseConfig(yml)
 
-	cfgVars := c.Vars
-	envVars := c.DeployEnvs[env].Vars
+	cfgVars := rawConfig.Vars
+	envVars := rawConfig.DeployEnvs[env].Vars
 
 	for k, v := range cfgVars {
 		vars[k] = v
@@ -37,8 +40,22 @@ func LoadConfig(yml []byte, vars Vars, env string) Config {
 		vars[k] = v
 	}
 
+	for k, v := range runtimeVars {
+		vars[k] = v
+	}
+
 	c = parseConfig(parseTmpl(yml, vars))
-	return c
+	return &Config{
+		Tasks:       buildTasks(c),
+		Environment: buildEnv(c),
+	}
+}
+
+func buildEnv(raw RawConfig) Environment {
+}
+
+func buildTasks(raw RawConfig) []*Task {
+
 }
 
 func parseTmpl(tpl []byte, vars Vars) []byte {
@@ -54,8 +71,8 @@ func parseTmpl(tpl []byte, vars Vars) []byte {
 	return buff.Bytes()
 }
 
-func parseConfig(yml []byte) Config {
-	c := Config{}
+func parseConfig(yml []byte) RawConfig {
+	c := RawConfig{}
 	err := yaml.Unmarshal(yml, &c)
 
 	if err != nil {
