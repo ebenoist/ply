@@ -1,20 +1,19 @@
-Version: 1
+Version: 2
 
-Vars:
+vars:
   AppName: "Foo"
-Tasks:
+tasks:
   RemoveHeartBeat: docker exec {{.AppName}} rm /tmp/heartbeat.txt
-  TouchHeartbeat: docker exec {{.AppName}} touch /tmp/heartbeat.txt
   AnnounceStart:
-    Plugin: Hipchat
-    Msg: Starting deploy on {{.Host}}
+    Hipchat:
+      Msg: Starting deploy on {{.Host}}
   Verify:
     Plugin: Verify
     Endpoint: /v1/baz
     Timeout: 200
   Start: docker start {{.AppName}}
   Stop:
-    Plugin: Remote
+    Runner: Remote
     User: super
     Command: docker stop {{.AppName}}
   Deploy:
@@ -23,9 +22,15 @@ Tasks:
     - Start
     - TouchHeartbeat
 Plugins:
-  Hipchat:
-  Verify:
-Environments:
+  - Hipchat:
+    Endpoint:
+    Room:
+Remote:
+  Staging:
+    User: deploy
+    Hosts:
+      - foo.bar
+Environment:
   User: deploy
   Staging:
     User: staging-deploy
@@ -34,5 +39,3 @@ Environments:
       - my-app2.com
     Vars:
       JRubyOpts: -J-Xmn5376m -J-Xms7168m -J-Xmx7168m
-
-

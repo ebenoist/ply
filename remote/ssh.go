@@ -1,7 +1,8 @@
-package main
+package remote
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -51,19 +52,18 @@ func (c *AgentClient) Run(cmd string) error {
 	}
 	defer session.Close()
 
-	var errors bytes.Buffer
+	var errs bytes.Buffer
 	var infos bytes.Buffer
 
 	session.Stdout = &infos
-	session.Stderr = &errors
+	session.Stderr = &errs
 
 	err = session.Run(cmd)
 
-	if len(errors.String()) > 0 {
-		log.Printf("%s", red(errors.String()))
-	} else {
-		log.Printf("%s", green(errors.String()))
+	if len(errs.String()) > 0 {
+		return errors.New(errs.String())
 	}
 
+	log.Printf("%s", errs.String())
 	return err
 }

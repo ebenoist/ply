@@ -2,13 +2,13 @@
 
 name = ply
 
-all: test
+all: test build
 build:
-		@gb build
+		@go build -o bin/ply ./cmd/ply
 
 test:
-		@gb test
+		@go test
 
 release:
-	@env GOOS=linux gb build
-	@env GOOS=darwin gb build
+	@env GOOS=linux go build
+	@env GOOS=darwin go build
